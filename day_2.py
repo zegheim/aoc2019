@@ -1,18 +1,38 @@
-with open("inputs/day_2", "r") as f:
-    intcode = [int(i) for i in f.read().split(",")]
+def initialise(noun, verb):
+    with open("inputs/day_2", "r") as f:
+        memory = [int(i) for i in f.read().split(",")]
 
-intcode[1] = 12
-intcode[2] = 2
+    memory[1] = noun
+    memory[2] = verb
 
-for i in range(0, len(intcode), 4):
-    if intcode[i] == 99:
-        print(intcode[0])
-        break
-    input_1 = intcode[intcode[i + 1]]
-    input_2 = intcode[intcode[i + 2]]
-    if intcode[i] == 1:
-        intcode[intcode[i + 3]] = input_1 + input_2
-    elif intcode[i] == 2:
-        intcode[intcode[i + 3]] = input_1 * input_2
-    else:
-        raise Exception("Something went wrong.")
+    return memory
+
+
+def run_program(memory):
+    pointer = 0
+    while pointer < len(memory):
+        opcode = memory[pointer]
+        if opcode == 99:
+            break
+        params = [memory[pointer + k] for k in range(1, 4)]
+        if opcode == 1:
+            memory[params[2]] = memory[params[0]] + memory[params[1]]
+        elif opcode == 2:
+            memory[params[2]] = memory[params[0]] * memory[params[1]]
+        else:
+            raise Exception(
+                "Something went wrong at address = %d. Value at address = %d",
+                pointer,
+                memory[pointer],
+            )
+        pointer = pointer + len(params) + 1
+
+
+def main():
+    mem_init = initialise(12, 2)
+    run_program(mem_init)
+    print(mem_init[0])
+
+
+if __name__ == "__main__":
+    main()
