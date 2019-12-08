@@ -8,7 +8,8 @@ def initialise(noun, verb):
     return memory
 
 
-def run_program(memory):
+def run_program(mem_init):
+    memory = mem_init
     pointer = 0
     while pointer < len(memory):
         opcode = memory[pointer]
@@ -26,12 +27,28 @@ def run_program(memory):
                 memory[pointer],
             )
         pointer = pointer + len(params) + 1
+    return memory
 
 
 def main():
     mem_init = initialise(12, 2)
-    run_program(mem_init)
-    print(mem_init[0])
+    memory = run_program(mem_init)
+    print("Answer for part 1: {}".format(memory[0]))
+
+    import numpy as np
+
+    outputs_n = np.array([run_program(initialise(noun, 0))[0] for noun in range(0, 10)])
+    print(outputs_n)
+    print(np.diff(outputs_n))  # output = 368640n + f(v) + C
+
+    outputs_v = np.array([run_program(initialise(0, verb))[0] for verb in range(0, 10)])
+    print(outputs_v)
+    print(np.diff(outputs_v))  # output = 368640n + v + 152702
+
+    print("Noun: {}".format((19690720 - 152702) // 368640))  # 53
+    print("Verb: {}".format((19690720 - 152702) % 368640))  # 98
+
+    print("Answer for part 2: {}".format(53 * 100 + 98))
 
 
 if __name__ == "__main__":
