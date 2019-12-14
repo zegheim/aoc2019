@@ -1,8 +1,6 @@
 def criteria_checker(num, part_2=False):
     import re
 
-    part_of_a_larger_group = False
-
     if len(num) != 6:
         return False
 
