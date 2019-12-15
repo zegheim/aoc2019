@@ -1,3 +1,6 @@
+import itertools
+
+
 class IntcodeComputer(object):
     def __init__(self, mem_init, debug=False):
         self.debug = debug
@@ -97,42 +100,31 @@ class IntcodeComputer(object):
                 self.pointer = self.pointer + param_length + 1
 
 
-def run_tests():
-    print("Test #1: Check if input equals 8 (position mode)")
-    IntcodeComputer("3,9,8,9,10,9,4,9,99,-1,8".split(",")).run_program()
-    print("Test #2: Check if input equals 7 (immediate mode)")
-    IntcodeComputer("3,3,1107,-1,8,3,4,3,99".split(",")).run_program()
-    print("Test #3: Check if input is non-zero (position mode)")
-    IntcodeComputer("3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9".split(",")).run_program()
-    print("Test #4: Check if input is non-zero (immediate mode)")
-    IntcodeComputer("3,3,1105,-1,9,1101,0,0,12,4,12,99,1".split(",")).run_program()
-    print("Test #5.1: Check if input is below 8 (expected 999)")
-    test_ic = IntcodeComputer(
-        (
-            "3,21,1008,21,8,20,1005,20,22,107,8,21,20,1006,20,31,1106,0,36,98,0,0,1002,"
-            "21,125,20,4,20,1105,1,46,104,999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,99"
-        ).split(","),
-        debug=True,
-    )
-    test_ic.run_program()
-    print("Test #5.2: Check if input equals 8 (expected 1000)")
-    test_ic.reset()
-    test_ic.run_program()
-    print("Test #5.3: Check if input is above 8 (expected 1001)")
-    test_ic.reset()
-    test_ic.run_program()
+def test_case():
+    mem_init = "3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0".split(",")
+    ic = IntcodeComputer(mem_init)
+    for _ in [4, 3, 2, 1, 0]:
+        ic.reset()
+        ic.run_program()
 
 
 def main():
-    with open("inputs/day_5", "r") as f:
-        mem_init = f.read().split(",")
-    ic = IntcodeComputer(mem_init)
-
     print("Part 1\n------")
-    ic.run_program()
+    phases = [
+        lambda x: 4 * x + 6,
+        lambda x: 8 * x + 42,
+        lambda x: 5 * x,
+        lambda x: 3 * x + 9,
+        lambda x: 9 * x + 11,
+    ]
+    max_output = 0
+    for perm in itertools.permutations(phases):
+        arg = 0
+        for phase in perm:
+            arg = phase(arg)
+        max_output = max(max_output, arg)
+    print(max_output)
     print("\nPart 2\n------")
-    ic.reset()
-    ic.run_program()
 
 
 if __name__ == "__main__":
