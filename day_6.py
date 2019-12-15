@@ -38,8 +38,15 @@ def main():
     )
 
     print("Part 2\n------")
-    print(list(md.map.neighbors("SAN")))
-    print("Answer for part 2: {}\n".format(None))
+    print(
+        "Answer for part 2: {}\n".format(
+            nx.algorithms.shortest_path_length(
+                md.map.to_undirected(),
+                source=next(md.map.neighbors("YOU")),
+                target=next(md.map.neighbors("SAN")),
+            )
+        )
+    )
 
 
 if __name__ == "__main__":
