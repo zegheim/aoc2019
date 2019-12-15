@@ -4,12 +4,10 @@ import networkx as nx
 class MapData(object):
     def __init__(self, orbits):
         self.orbits = orbits
-        self.objects = set()
         self.map = nx.DiGraph()
 
     def add_orbit(self, orbit):
         primary, secondary = orbit.split(")")
-        self.objects.update([primary, secondary])
         self.map.add_edge(secondary, primary)
 
     def get_orbits(self, obj):
@@ -24,7 +22,7 @@ def test_case():
     orbits = "COM)B B)C C)D D)E E)F B)G G)H D)I E)J J)K K)L".split(" ")
     md = MapData(orbits)
     md.populate()
-    print(sum(len(md.get_orbits(obj)) for obj in md.objects))
+    print(sum(len(md.get_orbits(obj)) for obj in md.map.__iter__()))
 
 
 def main():
@@ -35,11 +33,12 @@ def main():
     md.populate()
     print(
         "Answer for part 1: {}\n".format(
-            sum(len(md.get_orbits(obj)) for obj in md.objects)
+            sum(len(md.get_orbits(obj)) for obj in md.map.__iter__())
         )
     )
 
     print("Part 2\n------")
+    print(list(md.map.neighbors("SAN")))
     print("Answer for part 2: {}\n".format(None))
 
 
